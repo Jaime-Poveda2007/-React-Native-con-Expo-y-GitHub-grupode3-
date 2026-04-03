@@ -1,121 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import ListaScreen from './ListaScreen';
 
-function App() {
-  const [count, setCount] = useState(0)
+const TABS = [
+  { key: 'home',  label: 'Inicio', icon: '🏠' },
+  { key: 'lista', label: 'Lista',  icon: '♟️' },
+  { key: 'perfil',label: 'Perfil', icon: '👤' },
+];
 
+function HomeScreen() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <div style={s.screen}>
+      <h2 style={{ color: '#FFF' }}>Bienvenido ♟️</h2>
+      <p style={{ color: '#aaa' }}>App de streamers de ajedrez en Chess.com</p>
+    </div>
+  );
 }
 
-export default App
+function PerfilScreen() {
+  return (
+    <div style={s.screen}>
+      <h2 style={{ color: '#FFF' }}>Perfil</h2>
+      <p style={{ color: '#aaa' }}>Función original del integrante C</p>
+    </div>
+  );
+}
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('home');
+
+  const renderScreen = () => {
+    if (activeTab === 'home')  return <HomeScreen />;
+    if (activeTab === 'lista') return <ListaScreen />;
+    if (activeTab === 'perfil') return <PerfilScreen />;
+  };
+
+  return (
+    <div style={s.container}>
+
+      {/* Cabecera */}
+      <div style={s.header}>
+        <span>♟ Chess Streamers</span>
+      </div>
+
+      {/* Pantalla activa */}
+      <div style={s.content}>
+        {renderScreen()}
+      </div>
+
+      {/* Barra de pestañas */}
+      <div style={s.tabBar}>
+        {TABS.map(tab => {
+          const active = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{ ...s.tabItem, ...(active ? s.tabActive : {}) }}
+            >
+              <span style={{ fontSize: 22 }}>{tab.icon}</span>
+              <span style={{ fontSize: 11, color: active ? '#769656' : '#aaa' }}>
+                {tab.label}
+              </span>
+              {active && <div style={s.underline} />}
+            </button>
+          );
+        })}
+      </div>
+
+    </div>
+  );
+}
+
+const s = {
+  container: { display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#302E2B', fontFamily: 'sans-serif' },
+  header:    { backgroundColor: '#769656', color: '#FFF', padding: '14px 16px', fontSize: 18, fontWeight: 'bold', textAlign: 'center' },
+  content:   { flex: 1, overflow: 'auto' },
+  screen:    { padding: 24 },
+  tabBar:    { display: 'flex', borderTop: '1px solid #555', backgroundColor: '#302E2B' },
+  tabItem:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0', background: 'none', border: 'none', cursor: 'pointer', gap: 2 },
+  tabActive: {},
+  underline: { width: 24, height: 3, backgroundColor: '#769656', borderRadius: 2, marginTop: 2 },
+};
