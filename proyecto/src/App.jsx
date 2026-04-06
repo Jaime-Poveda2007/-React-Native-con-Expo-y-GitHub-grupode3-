@@ -1,37 +1,12 @@
 import { useState } from 'react';
 import ListaScreen from './ListaScreen';
+import FuncionOriginal from './screens/FuncionOriginal'; 
 
-// Iconos SVG simples, sin dependencias
-function IconoInicio({ color }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  );
-}
-
-function IconoLista({ color }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="8" y1="6" x2="21" y2="6" />
-      <line x1="8" y1="12" x2="21" y2="12" />
-      <line x1="8" y1="18" x2="21" y2="18" />
-      <line x1="3" y1="6" x2="3.01" y2="6" />
-      <line x1="3" y1="12" x2="3.01" y2="12" />
-      <line x1="3" y1="18" x2="3.01" y2="18" />
-    </svg>
-  );
-}
-
-function IconoPerfil({ color }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
+const TABS = [
+  { key: 'home',  label: 'Inicio', icon: '🏠' },
+  { key: 'lista', label: 'Lista',  icon: '♟️' },
+  { key: 'perfil',label: 'Perfil', icon: '👤' },
+];
 
 function HomeScreen() {
   return (
@@ -44,9 +19,9 @@ function HomeScreen() {
 
 function PerfilScreen() {
   return (
-    <div style={{ padding: 24 }}>
-      <h2 style={{ color: '#FFFFFF' }}>Perfil</h2>
-      <p style={{ color: '#888' }}>Función original del integrante C</p>
+    <div style={s.screen}>
+      <h2 style={{ color: '#FFF' }}>Perfil</h2>
+      <p style={{ color: '#aaa' }}>Función original del integrante C</p>
     </div>
   );
 }
@@ -54,49 +29,43 @@ function PerfilScreen() {
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
 
-  function mostrarPantalla() {
-    if (activeTab === 'home') return <HomeScreen />;
+  const renderScreen = () => {
+    if (activeTab === 'home')  return <HomeScreen />;
     if (activeTab === 'lista') return <ListaScreen />;
     if (activeTab === 'perfil') return <PerfilScreen />;
-  }
+  };
 
   return (
     <div style={estilos.contenedor}>
 
-      <div style={estilos.cabecera}>
-        <span>Chess Streamers</span>
+      {/* Cabecera */}
+      <div style={s.header}>
+        <span>♟ Chess Streamers</span>
       </div>
 
-      <div style={estilos.contenido}>
-        {mostrarPantalla()}
+      {/* Pantalla activa */}
+      <div style={s.content}>
+        {renderScreen()}
       </div>
 
-      <div style={estilos.barraDeNavegacion}>
-
-        <button
-          onClick={() => setActiveTab('home')}
-          style={activeTab === 'home' ? estilos.pestañaActiva : estilos.pestaña}
-        >
-          <IconoInicio color={activeTab === 'home' ? '#FFFFFF' : '#555'} />
-          <span>Inicio</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('lista')}
-          style={activeTab === 'lista' ? estilos.pestañaActiva : estilos.pestaña}
-        >
-          <IconoLista color={activeTab === 'lista' ? '#FFFFFF' : '#555'} />
-          <span>Lista</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('perfil')}
-          style={activeTab === 'perfil' ? estilos.pestañaActiva : estilos.pestaña}
-        >
-          <IconoPerfil color={activeTab === 'perfil' ? '#FFFFFF' : '#555'} />
-          <span>Perfil</span>
-        </button>
-
+      {/* Barra de pestañas */}
+      <div style={s.tabBar}>
+        {TABS.map(tab => {
+          const active = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{ ...s.tabItem, ...(active ? s.tabActive : {}) }}
+            >
+              <span style={{ fontSize: 22 }}>{tab.icon}</span>
+              <span style={{ fontSize: 11, color: active ? '#769656' : '#aaa' }}>
+                {tab.label}
+              </span>
+              {active && <div style={s.underline} />}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
